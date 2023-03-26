@@ -46,7 +46,8 @@ const checkStatus = async response => {
     console.log(response)
     if (response.statusText === "Unauthorized" || response.statusText === "Forbidden") {
       localStorage.removeItem("authUser")
-
+      localStorage.removeItem("shop")
+      // window.location = "/login"
       window.location.reload(true)
     }
 

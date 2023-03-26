@@ -58,10 +58,6 @@ const Dashboard = () => {
     }
   }
 
-  const editShopName = () => {
-    console.log("editShopName")
-  }
-
   const selectShop = shop => {
     dispatch(setSelectedShop(shop))
   }
@@ -205,19 +201,14 @@ const Dashboard = () => {
                                       <span className="badge bg-soft-success font-size-12">Active</span>
                                     )}
                                   </td>
-                                  <td className="text-primary">
-                                    <i className="uil uil-pen font-size-18" id="edittooltip" onClick={editShopName} />
-                                    <UncontrolledTooltip placement="top" target="edittooltip">
-                                      Edit
-                                    </UncontrolledTooltip>
-                                  </td>
-                                  <td className="text-danger">
+
+                                  <td className="text-danger cursor-pointer">
                                     <i className="uil uil-trash-alt font-size-18" id="deletetooltip" onClick={() => deleteShop(shop.id)} />
                                     <UncontrolledTooltip placement="top" target="deletetooltip">
                                       Delete
                                     </UncontrolledTooltip>
                                   </td>
-                                  <td className="text-primary">
+                                  <td className="text-primary cursor-pointer">
                                     <i className="uil-eye font-size-18" id="viewtooltip" onClick={() => selectShop(shop)}></i>
                                     <UncontrolledTooltip placement="top" target="viewtooltip">
                                       View

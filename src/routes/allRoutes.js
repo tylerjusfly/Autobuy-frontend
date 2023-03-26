@@ -15,6 +15,9 @@ import LatestTransaction from "../pages/Transaction"
 import TopUser from "../pages/Transaction/TopUser"
 import DatatableTables from "../pages/Transaction/Commerce"
 
+// shop related pages
+import ShopProducts from "../pages/Products/index"
+
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -36,6 +39,9 @@ const authRoutes = [
   { path: "/register", component: Register },
 ]
 
-const shopRoutes = [{ path: "/userss", component: TopUser }]
+const shopRoutes = [
+  { path: "/userss", component: TopUser },
+  { path: "/shop-products", component: ShopProducts },
+]
 
 export { userRoutes, authRoutes, shopRoutes }

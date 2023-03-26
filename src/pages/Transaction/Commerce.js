@@ -269,7 +269,7 @@ function DatatableTables() {
           </Row>
           <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle} tag="h4">
-              {!!isEdit ? "Edit Order" : "Add Order"}
+              {!!isEdit ? "Edit Order" : "Add Orderss"}
             </ModalHeader>
             <ModalBody>
               <Form
