@@ -5,7 +5,7 @@ import { Col } from "reactstrap"
 const TableLoading = () => {
   return (
     <Col>
-      <MoonLoader size={40} />
+      <MoonLoader size={37} />
     </Col>
   )
 }

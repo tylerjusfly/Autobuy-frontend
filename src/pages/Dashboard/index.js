@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Alert, Container, Table, UncontrolledTooltip } from "reactstrap"
 import { fetchRequest } from "../../helpers/api_helper"
+import { useToast } from "../../helpers/Notifcation/useToast"
 import { setSelectedShop } from "../../store/e-commerce/actions"
 
 const Dashboard = () => {
   const dispatch = useDispatch()
+  const { showToast, RenderToast } = useToast()
+
   const [shops, setShops] = useState([])
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
   const [shopCount, setShopCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [openForm, setOpenForm] = useState(false)
@@ -30,7 +31,7 @@ const Dashboard = () => {
       setShopCount(count)
       setLoading(false)
     } catch (error) {
-      setError(error.message || "an error occurred while fetching shops")
+      showToast(error.message || "an error occurred while fetching shops", "danger", 6000)
     }
   }, [shopUser.user.username])
 
@@ -43,18 +44,16 @@ const Dashboard = () => {
       const rs = await fetchRequest(registerUrl, "POST", true, values)
       console.log(rs)
       if (rs.success) {
-        setSuccess("shop created successfully")
+        showToast("shop created successfully", "success")
         setShopname("")
         setDescription("")
         fetchShops()
       } else {
-        setError(rs.message)
-        setSuccess("")
+        showToast(rs.message, "danger", 6000)
       }
     } catch (error) {
       setLoading(false)
-      setSuccess("")
-      setError(error.message || "an error occurred while creating shop")
+      showToast(error.message || "an error occurred while creating shop", "danger", 6000)
     }
   }
 
@@ -68,14 +67,11 @@ const Dashboard = () => {
       const rs = await fetchRequest(url, "PATCH", true)
       console.log("shop deleted successfully", rs)
       if (rs.success) {
-        setSuccess("shop disabled successfully")
+        showToast("shop disabled successfully", "success")
         fetchShops()
-        setTimeout(() => {
-          setSuccess("")
-        }, 3000)
       }
     } catch (error) {
-      setError(error.message || "unable to delete shop")
+      showToast(error.message || "unable to delete shop", "danger", 6000)
     }
   }
 
@@ -91,8 +87,7 @@ const Dashboard = () => {
         <Container fluid>
           <div className="row">
             <div className="col-12 col">
-              {error && error ? <Alert color="danger">{error}</Alert> : null}
-              {success ? <Alert color="success">{success}</Alert> : null}
+              <RenderToast />
               <div className="row">
                 <div className="col-lg-4">
                   <div className="card">

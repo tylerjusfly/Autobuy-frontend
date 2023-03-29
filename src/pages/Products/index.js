@@ -13,9 +13,11 @@ import TableLoading from "../../components/Common/TableLoading"
 import { Link, Redirect } from "react-router-dom"
 import ProductEdit from "./ProductEdit"
 import { useToast } from "../../helpers/Notifcation/useToast"
+import { ScaleLoader } from "react-spinners"
 
 const ShopProducts = () => {
   const [modal, setModal] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const [loaded, setLoaded] = useState(true)
   const [ShopProducts, setShopProducts] = useState([])
@@ -74,15 +76,18 @@ const ShopProducts = () => {
 
       //Send To backend
       try {
+        setSubmitting(true)
         const url = "/products/create"
 
         const rs = await fetchRequest(url, "POST", true, newProduct)
         if (rs.success) {
           showToast("Product created successfully", "success")
+          setSubmitting(false)
           fetchProducts()
         }
       } catch (error) {
         showToast(error.message || "error creating product", "danger", 6000)
+        setSubmitting(false)
       }
 
       validation.resetForm()
@@ -207,7 +212,7 @@ const ShopProducts = () => {
                   <Col>
                     <div className="text-end">
                       <button type="submit" className="btn btn-success save-user">
-                        Save Product
+                        {submitting ? <ScaleLoader size={10} /> : "Save Product"}
                       </button>
                     </div>
                   </Col>
