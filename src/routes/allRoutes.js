@@ -17,6 +17,7 @@ import DatatableTables from "../pages/Transaction/Commerce"
 
 // shop related pages
 import ShopProducts from "../pages/Products/index"
+import ProductEdit from "../pages/Products/ProductEdit"
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -42,6 +43,7 @@ const authRoutes = [
 const shopRoutes = [
   { path: "/userss", component: TopUser },
   { path: "/shop-products", component: ShopProducts },
+  { path: "/shop-product/edit", component: ProductEdit },
 ]
 
 export { userRoutes, authRoutes, shopRoutes }

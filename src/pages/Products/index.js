@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
+
 import { Alert, Button, Card, CardBody, CardTitle, Col, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader, Row, UncontrolledTooltip } from "reactstrap"
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
@@ -9,14 +10,18 @@ import { useFormik } from "formik"
 import { fetchRequest } from "../../helpers/api_helper"
 import { useSelector } from "react-redux"
 import TableLoading from "../../components/Common/TableLoading"
+import { Link, Redirect } from "react-router-dom"
+import ProductEdit from "./ProductEdit"
+import { useToast } from "../../helpers/Notifcation/useToast"
 
 const ShopProducts = () => {
   const [modal, setModal] = useState(false)
+  const [editModal, setEditModal] = useState(false)
   const [loaded, setLoaded] = useState(true)
   const [ShopProducts, setShopProducts] = useState([])
-  const [success, setSuccess] = useState("")
-  const [error, setError] = useState("")
   const { selectedshop } = useSelector(state => state.ecommerce)
+
+  const { showToast, RenderToast } = useToast()
 
   const fetchProducts = useCallback(
     async page => {
@@ -34,7 +39,7 @@ const ShopProducts = () => {
           setLoaded(false)
         }
       } catch (error) {
-        setError(error.message || "error fetching products")
+        showToast(error.message || "error fetching products", "danger", 6000)
         setLoaded(false)
       }
     },
@@ -68,17 +73,16 @@ const ShopProducts = () => {
       }
 
       //Send To backend
-      const url = "/products/create"
+      try {
+        const url = "/products/create"
 
-      const rs = await fetchRequest(url, "POST", true, newProduct)
-      if (rs.success) {
-        setSuccess("Product created successfully")
-        setTimeout(() => {
-          setSuccess("")
-        }, 3000)
-        fetchProducts()
-      } else {
-        setError(rs.message || "error creating product")
+        const rs = await fetchRequest(url, "POST", true, newProduct)
+        if (rs.success) {
+          showToast("Product created successfully", "success")
+          fetchProducts()
+        }
+      } catch (error) {
+        showToast(error.message || "error creating product", "danger", 6000)
       }
 
       validation.resetForm()
@@ -90,13 +94,18 @@ const ShopProducts = () => {
     modal ? setModal(false) : setModal(true)
   }, [modal])
 
+  const editToggle = useCallback(() => {
+    editModal ? setEditModal(false) : setEditModal(true)
+  }, [editModal])
+
   return (
     <React.Fragment>
       <div className="page-content">
+        {/* the end */}
         <div className="container-fluid">
           <Breadcrumbs breadcrumbItem="Products" />
-          {error && error ? <Alert color="danger">{error}</Alert> : null}
-          {success ? <Alert color="success">{success}</Alert> : null}
+          <RenderToast />
+
           <Row>
             <Col xs="12">
               <Card>
@@ -135,10 +144,22 @@ const ShopProducts = () => {
                                 <Td>{product.stock_count}</Td>
                                 <Td>12:12PM</Td>
                                 <Td className="text-primary cursor-pointer">
-                                  <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
-                                  <UncontrolledTooltip placement="top" target="edittooltip">
-                                    Edit
-                                  </UncontrolledTooltip>
+                                  <Link
+                                    to={{
+                                      pathname: "/shop-product/edit",
+                                      state: { from: "/shop-products", product },
+                                    }}
+                                  >
+                                    <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
+                                  </Link>
+                                </Td>
+                                <Td>
+                                  <span>
+                                    <i className="mdi mdi-delete font-size-18" id="deltooltip" onClick={() => showToast("Your custom toast message", "danger")} />
+                                    <UncontrolledTooltip placement="top" target="deltooltip">
+                                      Delete
+                                    </UncontrolledTooltip>
+                                  </span>
                                 </Td>
                               </Tr>
                             ))}
@@ -151,8 +172,9 @@ const ShopProducts = () => {
               </Card>
             </Col>
           </Row>
+          {/* Create Product Modal */}
           <Modal isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle} tag="h4">
+            <ModalHeader toggle={toggle} tag="h6">
               {"Add Product"}
             </ModalHeader>
             <ModalBody>
@@ -191,6 +213,17 @@ const ShopProducts = () => {
                   </Col>
                 </Row>
               </Form>
+            </ModalBody>
+          </Modal>
+
+          {/* EDIT PRODUCT MODAL */}
+          <Modal isOpen={editModal} toggle={editToggle}>
+            <ModalHeader toggle={editToggle} tag="h6">
+              Edit Product
+            </ModalHeader>
+
+            <ModalBody>
+              <ProductEdit />
             </ModalBody>
           </Modal>
         </div>

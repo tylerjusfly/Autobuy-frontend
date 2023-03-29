@@ -77,7 +77,6 @@ const SidebarContent = props => {
   }, [props.location.pathname, activateParentDropdown])
 
   useEffect(() => {
-    console.log("shopFound", selectedshop)
     ref.current.recalculate()
   })
 
