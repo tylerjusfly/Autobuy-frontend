@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 import React, { useCallback, useEffect, useRef } from "react"
 
 // IMPORTING REDUX
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 
 // //Import Scrollbar
 import SimpleBar from "simplebar-react"
@@ -134,7 +134,7 @@ const SidebarContent = props => {
                     <Link to="/comm">{props.t("Product Detail")}</Link>
                   </li>
                   <li>
-                    <Link to="/#">{props.t("Orders")}</Link>
+                    <Link to="/shop-coupon">{"Coupons"}</Link>
                   </li>
                   <li>
                     <Link to="/#">{props.t("Customers")}</Link>

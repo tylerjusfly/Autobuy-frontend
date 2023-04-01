@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 
-import { Alert, Button, Card, CardBody, CardTitle, Col, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader, Row, UncontrolledTooltip } from "reactstrap"
+import { Button, Card, CardBody, Col, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader, Row, UncontrolledTooltip } from "reactstrap"
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 
@@ -10,18 +10,19 @@ import { useFormik } from "formik"
 import { fetchRequest } from "../../helpers/api_helper"
 import { useSelector } from "react-redux"
 import TableLoading from "../../components/Common/TableLoading"
-import { Link, Redirect } from "react-router-dom"
-import ProductEdit from "./ProductEdit"
+import { Link } from "react-router-dom"
 import { useToast } from "../../helpers/Notifcation/useToast"
-import { ScaleLoader } from "react-spinners"
+import waiting from "../../assets/images/waiting.gif"
+import { paginate } from "../../constants/layout"
+import { PaginationTab } from "../../components/Common/Pagination"
 
 const ShopProducts = () => {
   const [modal, setModal] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [editModal, setEditModal] = useState(false)
   const [loaded, setLoaded] = useState(true)
   const [ShopProducts, setShopProducts] = useState([])
   const { selectedshop } = useSelector(state => state.ecommerce)
+  const [meta, setMeta] = useState({ ...paginate })
 
   const { showToast, RenderToast } = useToast()
 
@@ -31,13 +32,14 @@ const ShopProducts = () => {
 
       try {
         setLoaded(true)
-        const url = `/products/fetch?page=${p}&limit=10&shop_id=${selectedshop?.id}`
+        const url = `/products/fetch?page=${p}&limit=4&shop_id=${selectedshop?.id}`
         const rs = await fetchRequest(url, "GET", false)
 
         if (rs.success) {
           const { result, paging } = rs
 
           setShopProducts(result)
+          setMeta(paging)
           setLoaded(false)
         }
       } catch (error) {
@@ -45,7 +47,7 @@ const ShopProducts = () => {
         setLoaded(false)
       }
     },
-    [selectedshop]
+    [selectedshop, showToast]
   )
 
   useEffect(() => {
@@ -99,14 +101,19 @@ const ShopProducts = () => {
     modal ? setModal(false) : setModal(true)
   }, [modal])
 
-  const editToggle = useCallback(() => {
-    editModal ? setEditModal(false) : setEditModal(true)
-  }, [editModal])
+  const handlePageClick = page => {
+    setMeta(prev => {
+      return {
+        ...prev,
+        page: page,
+      }
+    })
+    fetchProducts(page)
+  }
 
   return (
     <React.Fragment>
       <div className="page-content">
-        {/* the end */}
         <div className="container-fluid">
           <Breadcrumbs breadcrumbItem="Products" />
           <RenderToast />
@@ -175,6 +182,8 @@ const ShopProducts = () => {
                   )}
                 </CardBody>
               </Card>
+              {/* PAgination Starts */}
+              {meta && <PaginationTab meta={meta} handlePageClick={handlePageClick} />}
             </Col>
           </Row>
           {/* Create Product Modal */}
@@ -212,23 +221,12 @@ const ShopProducts = () => {
                   <Col>
                     <div className="text-end">
                       <button type="submit" className="btn btn-success save-user">
-                        {submitting ? <ScaleLoader size={10} /> : "Save Product"}
+                        {submitting ? <img src={waiting} /> : "Save Product"}
                       </button>
                     </div>
                   </Col>
                 </Row>
               </Form>
-            </ModalBody>
-          </Modal>
-
-          {/* EDIT PRODUCT MODAL */}
-          <Modal isOpen={editModal} toggle={editToggle}>
-            <ModalHeader toggle={editToggle} tag="h6">
-              Edit Product
-            </ModalHeader>
-
-            <ModalBody>
-              <ProductEdit />
             </ModalBody>
           </Modal>
         </div>

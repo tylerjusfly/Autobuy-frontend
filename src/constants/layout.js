@@ -34,4 +34,10 @@ const isObjectEmpty = object => {
   return Object.keys(object).length === 0 && object.constructor === Object
 }
 
-export { layoutTypes, layoutModeTypes, layoutWidthTypes, topBarThemeTypes, sidebarSizeTypes, leftSideBarThemeTypes, isObjectEmpty }
+const paginate = {
+  page: 0,
+  pages: 0,
+  total: 0,
+}
+
+export { layoutTypes, layoutModeTypes, layoutWidthTypes, topBarThemeTypes, sidebarSizeTypes, leftSideBarThemeTypes, isObjectEmpty, paginate }

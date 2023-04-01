@@ -1,12 +1,14 @@
 import React from "react"
 import { MoonLoader } from "react-spinners"
-import { Col } from "reactstrap"
+
+import searchingGIF from "../../assets/images/searching.gif"
 
 const TableLoading = () => {
   return (
-    <Col>
-      <MoonLoader size={37} />
-    </Col>
+    <div className="loading-block">
+      <img alt="searching" src={searchingGIF} />
+      {/* <MoonLoader size={37} /> */}
+    </div>
   )
 }
 

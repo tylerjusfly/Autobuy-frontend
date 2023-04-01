@@ -18,6 +18,7 @@ import DatatableTables from "../pages/Transaction/Commerce"
 // shop related pages
 import ShopProducts from "../pages/Products/index"
 import ProductEdit from "../pages/Products/ProductEdit"
+import CouponHome from "../pages/Coupons/index"
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -44,6 +45,7 @@ const shopRoutes = [
   { path: "/userss", component: TopUser },
   { path: "/shop-products", component: ShopProducts },
   { path: "/shop-product/edit", component: ProductEdit },
+  { path: "/shop-coupon", component: CouponHome },
 ]
 
 export { userRoutes, authRoutes, shopRoutes }
