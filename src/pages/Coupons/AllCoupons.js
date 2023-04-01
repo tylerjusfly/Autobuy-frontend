@@ -12,7 +12,7 @@ import { PaginationTab } from "../../components/Common/Pagination"
 
 import waiting from "../../assets/images/waiting.gif"
 
-const AllCoupons = ({}) => {
+const AllCoupons = ({ setShowEditBox }) => {
   const [loading, setLoaded] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [coupons, setCoupons] = useState([])
@@ -31,7 +31,7 @@ const AllCoupons = ({}) => {
 
     try {
       setLoaded(true)
-      const url = `/coupons/find/?page=${p}&shop_id=${selectedshop?.id}`
+      const url = `/coupons/find/?page=${p}&limit=2&shop_id=${selectedshop?.id}`
 
       const rs = await fetchRequest(url, "GET", true)
 
@@ -70,9 +70,25 @@ const AllCoupons = ({}) => {
         couponCode: values.code,
         discount: parseInt(values.discount),
         max_use: parseInt(values.max_use, 10),
+        shop_id: selectedshop?.id,
       }
 
       console.log(dataToSend)
+      try {
+        setSubmitting(true)
+        const url = `/coupons/create`
+        const rs = await fetchRequest(url, "POST", true, dataToSend)
+        if (rs.success) {
+          showToast("Coupon created successfully", "success")
+          setSubmitting(false)
+          getAllCoupons()
+        }
+      } catch (error) {
+        showToast(error.message || "error creating coupon", "danger", 6000)
+        setSubmitting(false)
+      }
+      validation.resetForm()
+      toggle()
     },
   })
 
@@ -109,7 +125,7 @@ const AllCoupons = ({}) => {
                 <Table className="table mb-0">
                   <thead>
                     <tr>
-                      <th>#</th>
+                      {/* <th>#</th> */}
                       <th>Date</th>
                       <th>Code</th>
                       <th>Discount</th>
@@ -123,15 +139,15 @@ const AllCoupons = ({}) => {
                     ) : (
                       coupons.map((coupon, i) => (
                         <tr key={i}>
-                          <th scope="row">1</th>
+                          {/* <th scope="row">1</th> */}
                           <td>{moment(coupon?.createdAt).format("DD-MM-YYYY h:mmA")}</td>
                           <td>{coupon?.code}</td>
                           <td>{coupon?.discount}</td>
                           <td>{coupon?.max_use}</td>
-                          <td>
+                          <td className="cursor-pointer">
                             <div className="d-flex gap-3">
                               <span>
-                                <i className="mdi mdi-pencil font-size-18" id="edittooltip" onClick={() => showToast("Your custom toast message", "danger")} />
+                                <i className="mdi mdi-pencil font-size-18" id="edittooltip" onClick={() => setShowEditBox(coupon)} />
                                 <UncontrolledTooltip placement="top" target="edittooltip">
                                   Edit
                                 </UncontrolledTooltip>

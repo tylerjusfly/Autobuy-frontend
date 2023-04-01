@@ -29,10 +29,10 @@ const ProductEdit = ({ location, history }) => {
 
     validationSchema: Yup.object({
       product_name: Yup.string().required("please enter a product name"),
-      product_price: Yup.number().required("please enter a product price"),
-      product_type: Yup.string().required("please enter a product type"),
-      stock_count: Yup.number().required("please enter a stock count"),
-      description: Yup.string().required("please enter a description"),
+      product_price: Yup.number().typeError("price must be a number").required("please enter a product price"),
+      product_type: Yup.string().typeError("type cannot be null").required("please enter a product type"),
+      stock_count: Yup.number().typeError("stock must be a number").required("please enter a stock count").integer(),
+      description: Yup.string().typeError("description cannot be null").required("please enter a description"),
     }),
 
     onSubmit: async values => {
@@ -112,7 +112,7 @@ const ProductEdit = ({ location, history }) => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col xl={6}>
+                    <Col xl={3}>
                       <div className="mb-3">
                         <Label>Type</Label>
                         <Input
@@ -160,6 +160,12 @@ const ProductEdit = ({ location, history }) => {
                         {validation.touched.stock_count && validation.errors.stock_count ? (
                           <FormFeedback type="invalid">{validation.errors.stock_count}</FormFeedback>
                         ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={3}>
+                      <div className="mb-3">
+                        <Label>Image</Label>
+                        <Input type="file" name="image" className="form-control" id="resume" />
                       </div>
                     </Col>
                   </Row>

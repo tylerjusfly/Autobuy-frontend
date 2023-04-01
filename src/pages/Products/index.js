@@ -15,6 +15,7 @@ import { useToast } from "../../helpers/Notifcation/useToast"
 import waiting from "../../assets/images/waiting.gif"
 import { paginate } from "../../constants/layout"
 import { PaginationTab } from "../../components/Common/Pagination"
+import moment from "moment"
 
 const ShopProducts = () => {
   const [modal, setModal] = useState(false)
@@ -154,24 +155,24 @@ const ShopProducts = () => {
                                 <Td>{product?.product_name}</Td>
                                 <Td>${product?.product_price}</Td>
                                 <Td>{product.stock_count}</Td>
-                                <Td>12:12PM</Td>
+                                <Td>{moment(product?.createdAt).format("DD-MM-YYYY")}</Td>
                                 <Td className="text-primary cursor-pointer">
-                                  <Link
-                                    to={{
-                                      pathname: "/shop-product/edit",
-                                      state: { from: "/shop-products", product },
-                                    }}
-                                  >
-                                    <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
-                                  </Link>
-                                </Td>
-                                <Td>
-                                  <span>
-                                    <i className="mdi mdi-delete font-size-18" id="deltooltip" onClick={() => showToast("Your custom toast message", "danger")} />
-                                    <UncontrolledTooltip placement="top" target="deltooltip">
-                                      Delete
-                                    </UncontrolledTooltip>
-                                  </span>
+                                  <div className="d-flex gap-3">
+                                    <Link
+                                      to={{
+                                        pathname: "/shop-product/edit",
+                                        state: { from: "/shop-products", product },
+                                      }}
+                                    >
+                                      <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
+                                    </Link>
+                                    <span>
+                                      <i className="mdi mdi-delete font-size-18" id="deltooltip" onClick={() => showToast("Your custom toast message", "danger")} />
+                                      <UncontrolledTooltip placement="top" target="deltooltip">
+                                        Delete
+                                      </UncontrolledTooltip>
+                                    </span>
+                                  </div>
                                 </Td>
                               </Tr>
                             ))}
