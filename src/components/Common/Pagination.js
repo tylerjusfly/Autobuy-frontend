@@ -1,6 +1,6 @@
 import React from "react"
 import { Col, Pagination, PaginationItem, PaginationLink, Row } from "reactstrap"
-import { isEmpty, map } from "lodash"
+import { map } from "lodash"
 
 export const PaginationTab = ({ meta, handlePageClick }) => {
   return (

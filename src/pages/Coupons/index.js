@@ -21,7 +21,7 @@ const CouponHome = () => {
         <div className="container-fluid">
           <Breadcrumbs breadcrumbItem="Coupons" />
           {!showEditBox && <AllCoupons setShowEditBox={grabCoupondata} />}
-          {showEditBox && <EditCoupon data={couponData} />}
+          {showEditBox && <EditCoupon data={couponData} close={setShowEditBox} />}
         </div>
       </div>
     </React.Fragment>

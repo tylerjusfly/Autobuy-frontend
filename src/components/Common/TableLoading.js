@@ -1,6 +1,4 @@
 import React from "react"
-import { MoonLoader } from "react-spinners"
-
 import searchingGIF from "../../assets/images/searching.gif"
 
 const TableLoading = () => {

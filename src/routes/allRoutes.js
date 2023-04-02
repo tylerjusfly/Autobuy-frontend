@@ -19,6 +19,7 @@ import DatatableTables from "../pages/Transaction/Commerce"
 import ShopProducts from "../pages/Products/index"
 import ProductEdit from "../pages/Products/ProductEdit"
 import CouponHome from "../pages/Coupons/index"
+import IconBoxicons from "../assets/Icons/boxIcon"
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -29,6 +30,7 @@ const userRoutes = [
   { path: "/table", component: LatestTransaction },
 
   { path: "/comm", component: DatatableTables },
+  { path: "/icons", component: IconBoxicons },
 
   // this route should be at the end of all other routes
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },

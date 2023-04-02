@@ -15,15 +15,19 @@ import { useToast } from "../../helpers/Notifcation/useToast"
 import waiting from "../../assets/images/waiting.gif"
 import { paginate } from "../../constants/layout"
 import { PaginationTab } from "../../components/Common/Pagination"
+import DeleteModal from "../../components/Common/DeleteModal"
 import moment from "moment"
 
 const ShopProducts = () => {
   const [modal, setModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [loaded, setLoaded] = useState(true)
   const [ShopProducts, setShopProducts] = useState([])
   const { selectedshop } = useSelector(state => state.ecommerce)
   const [meta, setMeta] = useState({ ...paginate })
+
+  const [productId, setProductId] = useState("")
 
   const { showToast, RenderToast } = useToast()
 
@@ -33,7 +37,7 @@ const ShopProducts = () => {
 
       try {
         setLoaded(true)
-        const url = `/products/fetch?page=${p}&limit=4&shop_id=${selectedshop?.id}`
+        const url = `/products/fetch?page=${p}&limit=10&shop_id=${selectedshop?.id}`
         const rs = await fetchRequest(url, "GET", false)
 
         if (rs.success) {
@@ -57,7 +61,21 @@ const ShopProducts = () => {
     }
   }, [])
 
-  console.log(ShopProducts)
+  const dropProduct = async id => {
+    try {
+      const url = `/products/delete?id=${productId}`
+      const rs = await fetchRequest(url, "DELETE", true)
+
+      if (rs.success) {
+        showToast("Product Deleted successfully ", "success")
+        setDeleteModal(false)
+        fetchProducts()
+      }
+    } catch (error) {
+      showToast(error.message || "error deleting products", "danger", 6000)
+      setDeleteModal(false)
+    }
+  }
 
   // validation
   const validation = useFormik({
@@ -114,6 +132,7 @@ const ShopProducts = () => {
 
   return (
     <React.Fragment>
+      <DeleteModal show={deleteModal} onDeleteClick={dropProduct} onCloseClick={() => setDeleteModal(false)} />
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs breadcrumbItem="Products" />
@@ -156,18 +175,25 @@ const ShopProducts = () => {
                                 <Td>${product?.product_price}</Td>
                                 <Td>{product.stock_count}</Td>
                                 <Td>{moment(product?.createdAt).format("DD-MM-YYYY")}</Td>
-                                <Td className="text-primary cursor-pointer">
-                                  <div className="d-flex gap-3">
+                                <Td className="cursor-pointer">
+                                  <div className="d-flex gap-3 ">
                                     <Link
                                       to={{
                                         pathname: "/shop-product/edit",
                                         state: { from: "/shop-products", product },
                                       }}
                                     >
-                                      <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
+                                      <i className="mdi mdi-pencil font-size-18 text-primary" id="edittooltip" />
                                     </Link>
                                     <span>
-                                      <i className="mdi mdi-delete font-size-18" id="deltooltip" onClick={() => showToast("Your custom toast message", "danger")} />
+                                      <i
+                                        className="mdi mdi-delete font-size-18 text-danger"
+                                        id="deltooltip"
+                                        onClick={() => {
+                                          setProductId(product.id)
+                                          setDeleteModal(true)
+                                        }}
+                                      />
                                       <UncontrolledTooltip placement="top" target="deltooltip">
                                         Delete
                                       </UncontrolledTooltip>
@@ -222,7 +248,7 @@ const ShopProducts = () => {
                   <Col>
                     <div className="text-end">
                       <button type="submit" className="btn btn-success save-user">
-                        {submitting ? <img src={waiting} /> : "Save Product"}
+                        {submitting ? <img src={waiting} alt="waiting.." /> : "Save Product"}
                       </button>
                     </div>
                   </Col>

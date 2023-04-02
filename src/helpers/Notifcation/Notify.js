@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Alert, Toast, ToastBody, ToastHeader } from "reactstrap"
+import { Alert } from "reactstrap"
 
 export const Notify = ({ message, duration, onDismiss, type }) => {
   const [visible, setVisible] = useState(true)

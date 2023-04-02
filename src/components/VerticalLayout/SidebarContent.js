@@ -125,7 +125,22 @@ const SidebarContent = props => {
                 </Link>
                 <ul className="sub-menu">
                   <li>
-                    <Link to="/shop-products">{"Products"}</Link>
+                    <Link to="/shop-products">
+                      <i className="bx bx-basket"></i>
+                      <span>Products</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/shop-coupon">
+                      <i className="bx bxs-coupon"></i>
+                      <span>Coupons</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/${selectedshop?.name}`}>
+                      <i className="bx bx-cart"></i>
+                      <span>Store front</span>
+                    </Link>
                   </li>
                   <li>
                     <Link to="/userss">{props.t("ProductsDEs")}</Link>
@@ -134,10 +149,7 @@ const SidebarContent = props => {
                     <Link to="/comm">{props.t("Product Detail")}</Link>
                   </li>
                   <li>
-                    <Link to="/shop-coupon">{"Coupons"}</Link>
-                  </li>
-                  <li>
-                    <Link to="/#">{props.t("Customers")}</Link>
+                    <Link to="/icons">{props.t("Icons")}</Link>
                   </li>
                   <li>
                     <Link to="/#">{props.t("Cart")}</Link>
@@ -145,9 +157,7 @@ const SidebarContent = props => {
                   <li>
                     <Link to="/#">{props.t("Checkout")}</Link>
                   </li>
-                  <li>
-                    <Link to="/#">{props.t("Shops")}</Link>
-                  </li>
+
                   <li>
                     <Link to="/#">{props.t("Add Product")}</Link>
                   </li>
