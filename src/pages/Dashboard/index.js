@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { Alert, Container, Table, UncontrolledTooltip } from "reactstrap"
+import { Container, Table, UncontrolledTooltip } from "reactstrap"
 import { fetchRequest } from "../../helpers/api_helper"
 import { useToast } from "../../helpers/Notifcation/useToast"
 import { setSelectedShop } from "../../store/e-commerce/actions"
@@ -33,7 +33,7 @@ const Dashboard = () => {
     } catch (error) {
       showToast(error.message || "an error occurred while fetching shops", "danger", 6000)
     }
-  }, [shopUser.user.username])
+  }, [shopUser.user.username, showToast])
 
   const onSubmit = async e => {
     e.preventDefault()

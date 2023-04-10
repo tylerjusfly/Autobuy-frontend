@@ -137,7 +137,7 @@ const SidebarContent = props => {
                     </Link>
                   </li>
                   <li>
-                    <Link to={`/${selectedshop?.name}`}>
+                    <Link to={`shopfront/${selectedshop?.name}`}>
                       <i className="bx bx-cart"></i>
                       <span>Store front</span>
                     </Link>

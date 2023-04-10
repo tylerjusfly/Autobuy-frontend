@@ -8,6 +8,8 @@ import Login from "../pages/Authentication/Login"
 import Logout from "../pages/Authentication/Logout"
 import Register from "../pages/Authentication/Register"
 import ForgetPwd from "../pages/Authentication/ForgetPassword"
+
+import ShopFront from "../pages/StoreFront/index"
 // Profile
 import UserProfile from "../pages/Authentication/user-profile"
 
@@ -41,6 +43,7 @@ const authRoutes = [
   { path: "/login", component: Login },
   { path: "/forgot-password", component: ForgetPwd },
   { path: "/register", component: Register },
+  { path: "/shopfront/*", component: ShopFront },
 ]
 
 const shopRoutes = [
