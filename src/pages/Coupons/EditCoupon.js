@@ -1,41 +1,46 @@
-import React, { useEffect, useState } from "react"
-import { Card, CardBody, Col, Form, Input, Label, Row } from "reactstrap"
-import AsyncSelect from "react-select/async"
-import makeAnimated from "react-select/animated"
+import React, { useEffect, useState, useCallback } from "react"
+import { Button, Card, CardBody, Col, Form, Input, Label, Modal, Row } from "reactstrap"
+
 import { fetchRequest } from "../../helpers/api_helper"
 import { Link } from "react-router-dom"
-
-const animatedComponents = makeAnimated()
+import { paginate } from "../../constants/layout"
 
 const EditCoupon = ({ data, close }) => {
-  const [selectedMulti, setselectedMulti] = useState([])
+  const [viewProds, setViewProds] = useState(false)
   const [productArray, setProductArray] = useState([])
+  const [meta, setMeta] = useState({ ...paginate })
 
-  const fetchProducts = async q => {
-    if (!q || q.length < 1) {
-      return []
+  const tog_large = useCallback(() => {
+    viewProds ? setViewProds(false) : setViewProds(true)
+  }, [viewProds])
+
+  const fetchProducts = async page => {
+    let p = page || 1
+    try {
+      const url = `/coupons/get-products/?shop_id=${data.shopId}&limit=2&page=${p}`
+      const rs = await fetchRequest(url, "GET", true)
+
+      if (rs.success) {
+        const { result, paging } = rs
+
+        setProductArray(result)
+        setMeta(paging)
+      }
+    } catch (error) {
+      console.log(error)
     }
-    const url = `/products/fetch?shop_id=${data.shopId}&page=1&limit=10&q=${q}`
-    const rs = await fetchRequest(url, "GET", true)
-
-    const { result } = rs
-
-    const formatResult = result.map(product => ({
-      value: product.id,
-      label: product.product_name,
-    }))
-
-    return formatResult
   }
 
-  function handleMulti(selectedMulti) {
-    setselectedMulti(selectedMulti)
+  const fetchProductsWithCoupon = () => {}
+
+  const addToCoupon = () => {
+    console.log("adding to coupon")
   }
 
-  console.log(
-    "nn",
-    selectedMulti.map(m => m.value)
-  )
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
   console.log("data", data)
 
   return (
@@ -44,6 +49,12 @@ const EditCoupon = ({ data, close }) => {
         <Col lg={12}>
           <Card>
             <CardBody>
+              <div className="text-sm-end">
+                <Button type="button" color="success" className="waves-effect waves-light mb-3 btn btn-success" onClick={tog_large}>
+                  <i className="mdi mdi-plus me-1" />
+                  Add products
+                </Button>
+              </div>
               <form
                 onSubmit={e => {
                   e.preventDefault()
@@ -68,24 +79,6 @@ const EditCoupon = ({ data, close }) => {
                     <div className="mb-3">
                       <Label>Max Use</Label>
                       <Input type="text" className="form-control" value={data.max_use} readOnly disabled />
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xxl={12}>
-                    <div className="mb-3" style={{ height: "200px" }}>
-                      <label className="control-label">Products</label>
-
-                      <AsyncSelect
-                        cacheOptions
-                        components={animatedComponents}
-                        defaultOptions
-                        loadOptions={fetchProducts}
-                        isMulti
-                        onChange={e => {
-                          handleMulti(e)
-                        }}
-                      />
                     </div>
                   </Col>
                 </Row>
@@ -123,12 +116,55 @@ const EditCoupon = ({ data, close }) => {
               <i className="uil uil-times me-1"></i> Cancel
             </button>
             <button className="btn btn-success">
-              {" "}
-              <i className="uil uil-file-alt me-1"></i> Save{" "}
+              <i className="uil uil-file-alt me-1"></i> Save
             </button>
           </div>
         </div>
       </Row>
+
+      <Modal
+        size="lg"
+        isOpen={viewProds}
+        toggle={() => {
+          tog_large()
+        }}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0" id="myLargeModalLabel">
+            add products to coupon
+          </h5>
+          <button
+            onClick={() => {
+              setViewProds(false)
+            }}
+            type="button"
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body table-responsive">
+          <table className="table table-striped mb-0">
+            <tbody>
+              {productArray.map((product, i) => (
+                <tr key={i}>
+                  <th scope="row">{product.unique_id}</th>
+                  <td>{product.product_name}</td>
+                  <td>{product.product_price}</td>
+                  <td>@mdo</td>
+                  <td>
+                    <a onClick={addToCoupon} className="text-success">
+                      <i className="mdi mdi-plus me-1" />
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Modal>
     </>
   )
 }

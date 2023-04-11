@@ -1,7 +1,8 @@
 import React from "react"
-import { Card, CardBody, DropdownToggle, DropdownMenu, DropdownItem, Table, UncontrolledDropdown } from "reactstrap"
+import { Card, CardBody, DropdownToggle, DropdownMenu, DropdownItem, Table, UncontrolledDropdown, Row, Col } from "reactstrap"
 
 import FeatherIcon from "feather-icons-react"
+import AsyncSelect from "react-select/async"
 //Simple bar
 import SimpleBar from "simplebar-react"
 
@@ -167,6 +168,24 @@ const TopUser = () => {
               </Table>
             </div>
           </SimpleBar>
+          <Row>
+            <Col xxl={12}>
+              <div className="mb-3" style={{ height: "200px" }}>
+                <label className="control-label">Products</label>
+
+                {/* <AsyncSelect
+                  cacheOptions
+                  components={animatedComponents}
+                  defaultOptions
+                  loadOptions={fetchProducts}
+                  isMulti
+                  onChange={e => {
+                    handleMulti(e)
+                  }}
+                /> */}
+              </div>
+            </Col>
+          </Row>
         </CardBody>
       </Card>
     </React.Fragment>
