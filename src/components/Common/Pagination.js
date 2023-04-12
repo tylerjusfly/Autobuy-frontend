@@ -6,7 +6,7 @@ export const PaginationTab = ({ meta, handlePageClick }) => {
   return (
     <Row className="mt-4">
       <Col sm={6}>
-        <div>
+        <div style={{ marginRight: "20px", marginLeft: "20px" }}>
           <p className="mb-sm-0">{`Total ${meta.total} Items`}</p>
         </div>
       </Col>
