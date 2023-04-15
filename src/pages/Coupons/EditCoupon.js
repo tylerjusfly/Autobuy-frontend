@@ -4,11 +4,12 @@ import { Button, Card, CardBody, Col, Form, Input, Label, Modal, Row } from "rea
 import { fetchRequest } from "../../helpers/api_helper"
 import { Link } from "react-router-dom"
 import { paginate } from "../../constants/layout"
-import Pagination from "antd/lib/pagination"
-import { itemRender } from "../../constants/utilities"
+
+import { useToast } from "../../helpers/Notifcation/useToast"
 import { PaginationTab } from "../../components/Common/Pagination"
 
 const EditCoupon = ({ data, close }) => {
+  const { showToast, RenderToast } = useToast()
   const [viewProds, setViewProds] = useState(false)
   const [productArray, setProductArray] = useState([])
   const [couponProducts, setCouponProducts] = useState([])
@@ -31,6 +32,7 @@ const EditCoupon = ({ data, close }) => {
         setMeta(paging)
       }
     } catch (error) {
+      // showToast("error fetching products", "danger", 6000)
       console.log(error)
     }
   }
@@ -46,6 +48,23 @@ const EditCoupon = ({ data, close }) => {
         setCouponProducts(result)
       }
     } catch (error) {
+      showToast("error fetching products with coupon", "danger", 6000)
+      console.log(error)
+    }
+  }
+
+  const remove = async id => {
+    try {
+      const url = `/coupons/remove-coupon/?product_id=${id}&coupon_id=${data.id}`
+
+      const rs = await fetchRequest(url, "DELETE", true)
+
+      if (rs.success) {
+        showToast("product removed successfully", "success")
+        fetchProductsWithCoupon()
+      }
+    } catch (error) {
+      showToast("error removing product", "danger", 6000)
       console.log(error)
     }
   }
@@ -56,11 +75,13 @@ const EditCoupon = ({ data, close }) => {
 
       const rs = await fetchRequest(url, "POST", true)
       if (rs.success) {
+        showToast("product added successfully", "success")
         fetchProductsWithCoupon()
         fetchProducts()
         console.log("adding to coupon")
       }
     } catch (error) {
+      showToast(error.message || "error adding to coupon", "danger", 6000)
       console.log(error)
     }
   }
@@ -88,6 +109,7 @@ const EditCoupon = ({ data, close }) => {
   return (
     <>
       <Row>
+        <RenderToast />
         <Col lg={12}>
           <Card>
             <CardBody>
@@ -140,6 +162,9 @@ const EditCoupon = ({ data, close }) => {
                         <td>{p.product_name}</td>
                         <td>{p.product_price}</td>
                         <td>300</td>
+                        <td className="text-danger cursor-pointer">
+                          <i className="uil uil-trash-alt font-size-18" onClick={() => remove(p.id)} />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
