@@ -73,7 +73,7 @@ const ProductEdit = ({ location, history }) => {
             <div className="text-sm-end">
               <Link to={from} className="text-white">
                 <Button type="button" color="danger" className="waves-effect waves-light mb-3 btn btn-danger">
-                  <i class="mdi mdi-close-thick"></i>
+                  <i className="mdi mdi-close-thick"></i>
                 </Button>
               </Link>
             </div>

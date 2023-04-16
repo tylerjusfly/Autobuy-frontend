@@ -107,7 +107,7 @@ const SidebarContent = props => {
 
             <li>
               <Link to="/profile" className=" waves-effect">
-                <i class="dripicons-user"></i>
+                <i className="dripicons-user"></i>
                 <span>{"Profile"}</span>
               </Link>
             </li>
