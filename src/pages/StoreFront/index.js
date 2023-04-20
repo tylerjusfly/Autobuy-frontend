@@ -1,39 +1,45 @@
 import { isEmpty } from "lodash"
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { Card, CardBody, Col, Input, Nav, NavItem, NavLink, Row } from "reactstrap"
+import { Button, Card, CardBody, Col, Input, Nav, NavItem, NavLink, Row } from "reactstrap"
+import { fetchRequest } from "../../helpers/api_helper"
+import { paginate } from "../../constants/layout"
 
-const ShopFront = () => {
-  const [productList, setProductList] = useState([
-    {
-      product_image: "https://media.naheed.pk/catalog/product/cache/49dcd5d85f0fa4d590e132d0368d8132/i/u/iub1099661-1.jpg",
-      unique_id: "wmemdmd2222",
-      product_name: "Cigars",
-      product_price: 300,
-      type: "cigers",
-    },
-    {
-      product_image: "https://media.naheed.pk/catalog/product/cache/49dcd5d85f0fa4d590e132d0368d8132/i/u/iub1099661-1.jpg",
-      unique_id: "wmemdqasdda",
-      product_name: "Beans Grag",
-      product_price: 100,
-      type: "cigers",
-    },
-    {
-      product_image: "https://maltandgrape.com/products/xl_efes-malt-can-beer-500ml.png",
-      unique_id: "wmw32221sds",
-      product_name: "Adult Hood",
-      product_price: 2000,
-      type: "cigers",
-    },
-    {
-      product_image: "https://media.naheed.pk/catalog/product/cache/49dcd5d85f0fa4d590e132d0368d8132/i/u/iub1099661-1.jpg",
-      unique_id: "wmw322sw3222s",
-      product_name: "Addmddd",
-      product_price: 2000,
-      type: "cigers",
-    },
-  ])
+const ShopFront = props => {
+  const [loading, setLoading] = useState(true)
+  const [productList, setProductList] = useState([])
+  const [meta, setMeta] = useState({ ...paginate })
+  const ShopFrontName = props.match.params[0]
+
+  const fetchAllProducts = useCallback(async page => {
+    const p = page || 1
+    const shopname = props.match.params[0]
+
+    try {
+      setLoading(true)
+      const url = `/products/fetch?shopname=${shopname}&limit=20&page=1`
+      const rs = await fetchRequest(url, "GET", false)
+
+      if (rs.success) {
+        const { result, paging } = rs
+
+        setProductList(result)
+        setMeta(paging)
+        setLoading(false)
+      } else {
+        console.log("failed", rs)
+      }
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (loading) {
+      fetchAllProducts()
+    }
+  }, [])
 
   return (
     <Col lg={12} xl={12}>
@@ -43,7 +49,13 @@ const ShopFront = () => {
             <Row>
               <Col md={6}>
                 <div>
-                  <h5>Showing result for SnapIt</h5>
+                  <h5>Showing result for {ShopFrontName}</h5>
+                  <div className="text-muted">
+                    <span className="badge bg-success font-size-14 me-1">
+                      <i className="mdi mdi-star"></i> 4.2
+                    </span>
+                    {200} Reviews
+                  </div>
                 </div>
               </Col>
               <Col md={6}>
@@ -101,7 +113,7 @@ const ShopFront = () => {
                             {product.product_name}
                           </Link>
                         </h5>
-                        <p className="text-muted font-size-13">{product.type}, Shoes</p>
+                        <p className="text-muted font-size-13">{product.product_type ?? "not Specified"}</p>
 
                         <h5 className="mt-3 mb-0">
                           {/* <span className="text-muted me-2">
@@ -111,6 +123,18 @@ const ShopFront = () => {
                         </h5>
                       </div>
                     </div>
+                    <Row className="text-center mt-2">
+                      <Col sm={6} className="d-grid">
+                        <Button type="button" color="primary" className="btn-block waves-effect waves-light mt-2 me-1">
+                          <i className="uil uil-shopping-cart-alt me-2"></i>Proceed To Order
+                        </Button>
+                      </Col>
+                      {/* <Col sm={6} className="d-grid">
+                        <Button type="button" color="light" className="btn-block waves-effect  mt-2 waves-light">
+                          <i className="uil uil-shopping-basket me-2"></i>Buy now
+                        </Button>
+                      </Col> */}
+                    </Row>
                   </Col>
                 ))}
             </Row>
@@ -120,9 +144,5 @@ const ShopFront = () => {
     </Col>
   )
 }
-
-// ShopFront.propTypes = {
-//   history: PropTypes.object,
-// }
 
 export default ShopFront
