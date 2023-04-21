@@ -37,6 +37,7 @@ import {
   GET_PRODUCT_DETAIL_SUCCESS,
   SET_SELECTED_SHOP,
   DICARD_SELECTED_SHOP,
+  SHOWCHECKOUT_MODAL,
 } from "./actionTypes"
 
 export const getProducts = () => ({
@@ -127,20 +128,6 @@ export const deleteOrderFail = error => ({
   payload: error,
 })
 
-export const getCartData = () => ({
-  type: GET_CART_DATA,
-})
-
-export const getCartDataSuccess = cartData => ({
-  type: GET_CART_DATA_SUCCESS,
-  payload: cartData,
-})
-
-export const getCartDataFail = error => ({
-  type: GET_CART_DATA_FAIL,
-  payload: error,
-})
-
 export const getCustomers = () => ({
   type: GET_CUSTOMERS,
 })
@@ -221,4 +208,9 @@ export const setSelectedShop = shop => ({
 
 export const discardSelectedShop = () => ({
   type: DICARD_SELECTED_SHOP,
+})
+
+export const openCheckoutModal = product => ({
+  type: SHOWCHECKOUT_MODAL,
+  payload: product,
 })

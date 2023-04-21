@@ -4,12 +4,22 @@ import { Link } from "react-router-dom"
 import { Button, Card, CardBody, Col, Input, Nav, NavItem, NavLink, Row } from "reactstrap"
 import { fetchRequest } from "../../helpers/api_helper"
 import { paginate } from "../../constants/layout"
+import ProductOrder from "./ProductOrder"
+import { useDispatch } from "react-redux"
+import { openCheckoutModal } from "../../store/actions"
 
 const ShopFront = props => {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
   const [productList, setProductList] = useState([])
   const [meta, setMeta] = useState({ ...paginate })
   const ShopFrontName = props.match.params[0]
+
+  // Product Order
+  const [modal_fullscreen, setmodal_fullscreen] = useState(false)
+  const tog_fullscreen = useCallback(() => {
+    modal_fullscreen ? setmodal_fullscreen(false) : setmodal_fullscreen(true)
+  }, [modal_fullscreen])
 
   const fetchAllProducts = useCallback(async page => {
     const p = page || 1
@@ -89,51 +99,40 @@ const ShopFront = props => {
               {!isEmpty(productList) &&
                 productList.map((product, key) => (
                   <Col xl={4} sm={6} key={"_col_" + key}>
-                    <div
-                      className="product-box"
-                      // onClick={() => history.push(`/ecommerce-products/${product.unique_id}`)}
-                    >
+                    <div className="product-box">
                       <div className="product-img pt-4 px-4">
-                        {/* {product.isOffer ? (
-                                  <div className="product-ribbon badge bg-danger">
-                                    {`-${product.offer}%`}
-                                  </div>
-                                ) : null} */}
-                        {/* <div className="product-wishlist">
-                          <Link to="#">
-                            <i className="mdi mdi-heart-outline"></i>
-                          </Link>
-                        </div> */}
+                        <div className="product-ribbon badge bg-success">
+                          <i className="uil-cloud-upload me-2"></i> new
+                        </div>
+
                         <img src={product.product_image} alt="" className="img-fluid mx-auto d-block" width={50} />
                       </div>
 
                       <div className="text-center product-content p-4 mt-3">
                         <h5 className="mb-1">
-                          <Link to={"/ecommerce-product-detail/" + product.unique_id} className="text-dark">
-                            {product.product_name}
-                          </Link>
+                          <div className="text-dark">{product.product_name}</div>
                         </h5>
                         <p className="text-muted font-size-13">{product.product_type ?? "not Specified"}</p>
 
                         <h5 className="mt-3 mb-0">
-                          {/* <span className="text-muted me-2">
-                                    <del>${product.oldPrice}</del>
-                                  </span> */}
                           <b>${product.product_price}</b>
                         </h5>
                       </div>
                     </div>
                     <Row className="text-center mt-2">
                       <Col sm={6} className="d-grid">
-                        <Button type="button" color="primary" className="btn-block waves-effect waves-light mt-2 me-1">
+                        <Button
+                          type="button"
+                          color="primary"
+                          className="btn-block waves-effect waves-light mt-2 me-1"
+                          onClick={() => {
+                            tog_fullscreen()
+                            dispatch(openCheckoutModal(product))
+                          }}
+                        >
                           <i className="uil uil-shopping-cart-alt me-2"></i>Proceed To Order
                         </Button>
                       </Col>
-                      {/* <Col sm={6} className="d-grid">
-                        <Button type="button" color="light" className="btn-block waves-effect  mt-2 waves-light">
-                          <i className="uil uil-shopping-basket me-2"></i>Buy now
-                        </Button>
-                      </Col> */}
                     </Row>
                   </Col>
                 ))}
@@ -141,6 +140,7 @@ const ShopFront = props => {
           </div>
         </CardBody>
       </Card>
+      <ProductOrder modal_fullscreen={modal_fullscreen} setmodal_fullscreen={setmodal_fullscreen} tog_fullscreen={tog_fullscreen} />
     </Col>
   )
 }

@@ -25,11 +25,13 @@ import {
   DELETE_ORDER_FAIL,
   SET_SELECTED_SHOP,
   DICARD_SELECTED_SHOP,
+  SHOWCHECKOUT_MODAL,
 } from "./actionTypes"
 
 const INIT_STATE = {
   products: [],
   product: {},
+  checkoutModal: false,
   orders: [],
   cartData: {},
   customers: [],
@@ -53,10 +55,11 @@ const Ecommerce = (state = INIT_STATE, action) => {
         selectedshop: {},
       }
 
-    case GET_PRODUCTS_SUCCESS:
+    case SHOWCHECKOUT_MODAL:
       return {
         ...state,
-        products: action.payload,
+        checkoutModal: true,
+        product: action.payload,
       }
 
     case GET_PRODUCTS_FAIL:
@@ -120,18 +123,6 @@ const Ecommerce = (state = INIT_STATE, action) => {
       }
 
     case DELETE_ORDER_FAIL:
-      return {
-        ...state,
-        error: action.payload,
-      }
-
-    case GET_CART_DATA_SUCCESS:
-      return {
-        ...state,
-        cartData: action.payload,
-      }
-
-    case GET_CART_DATA_FAIL:
       return {
         ...state,
         error: action.payload,
