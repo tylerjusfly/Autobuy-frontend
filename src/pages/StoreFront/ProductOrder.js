@@ -1,11 +1,21 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 import { Button, Card, CardBody, Col, Container, Row, TabContent, Input, TabPane, Modal } from "reactstrap"
 import { isEmpty } from "lodash"
+import { formatCurrency } from "../../constants/utilities"
 
 const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, product }) => {
   const [activeTab, setActiveTab] = useState("1")
+  const [couponApplied, setCouponApplied] = useState(false)
+  const [Couponprice, setCouponPrice] = useState(0)
+  const [couponPercent, setCouponPercent] = useState(0)
+
+  const applyCoupon = () => {}
+
+  // useEffect(() => {
+  //   setPrice(product.product_price)
+  // }, [])
 
   return (
     <React.Fragment>
@@ -46,11 +56,6 @@ const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, p
                               <Row>
                                 <Col xs={12}>
                                   <TabContent activeTab={activeTab} className="position-relative">
-                                    <div className="product-wishlist">
-                                      {/* <Link to="#">
-                                        <i className="mdi mdi-heart-outline"></i>
-                                      </Link> */}
-                                    </div>
                                     <TabPane tabId="1">
                                       <div className="product-img">
                                         <img src={product.product_image} alt="" id="expandedImg1" className="img-fluid mx-auto d-block" />
@@ -79,8 +84,16 @@ const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, p
                               </div>
 
                               <h5 className="mt-4 pt-2">
-                                <del className="text-muted me-2">${product.product_price}</del>${200}
-                                <span className="text-danger font-size-14 ms-2">- 20 % Off</span>
+                                {couponApplied ? (
+                                  <>
+                                    <del className="text-muted me-2">{formatCurrency(product.product_price)}</del>
+
+                                    <span>{formatCurrency(Couponprice)} </span>
+                                    <span className="text-danger font-size-14 ms-2">- {couponPercent} % Off</span>
+                                  </>
+                                ) : (
+                                  <span>{formatCurrency(product.product_price)}</span>
+                                )}
                               </h5>
 
                               <p className="mt-4 text-muted">{"the worlld best friend"}</p>

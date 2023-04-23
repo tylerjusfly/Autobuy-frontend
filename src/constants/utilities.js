@@ -7,3 +7,5 @@ export const itemRender = (current, type, originalElement) => {
   }
   return originalElement
 }
+
+export const formatCurrency = amount => `$${Math.abs(amount)}`
