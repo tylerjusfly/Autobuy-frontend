@@ -31,7 +31,7 @@ const AllCoupons = ({ setShowEditBox }) => {
 
     try {
       setLoaded(true)
-      const url = `/coupons/find/?page=${p}&limit=2&shop_id=${selectedshop?.id}`
+      const url = `/coupons/find/?page=${p}&limit=10&shop_id=${selectedshop?.id}`
 
       const rs = await fetchRequest(url, "GET", true)
 

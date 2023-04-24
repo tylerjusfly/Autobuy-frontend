@@ -4,18 +4,39 @@ import { Link } from "react-router-dom"
 import { Button, Card, CardBody, Col, Container, Row, TabContent, Input, TabPane, Modal } from "reactstrap"
 import { isEmpty } from "lodash"
 import { formatCurrency } from "../../constants/utilities"
+import { fetchRequest } from "../../helpers/api_helper"
 
 const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, product }) => {
   const [activeTab, setActiveTab] = useState("1")
   const [couponApplied, setCouponApplied] = useState(false)
   const [Couponprice, setCouponPrice] = useState(0)
   const [couponPercent, setCouponPercent] = useState(0)
+  const [code, setCode] = useState("")
 
-  const applyCoupon = () => {}
+  const applyCoupon = async pid => {
+    try {
+      const url = `/coupons/calculate-discount/?pid=${pid}&couponCode=${code}`
+      const rs = await fetchRequest(url, "POST", false)
+      if (rs.success) {
+        const { result } = rs
 
-  // useEffect(() => {
-  //   setPrice(product.product_price)
-  // }, [])
+        setCouponApplied(true)
+        setCouponPrice(result.discountedPrice)
+        setCouponPercent(result.discountPercentage)
+        setCode("")
+      } else {
+        console.log(rs)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const closeModal = () => {
+    setCouponApplied(false)
+    setCouponPrice(0)
+    setCouponPercent(0)
+  }
 
   return (
     <React.Fragment>
@@ -33,6 +54,7 @@ const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, p
               <button
                 onClick={() => {
                   setmodal_fullscreen(false)
+                  closeModal()
                 }}
                 type="button"
                 className="close"
@@ -106,9 +128,9 @@ const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, p
 
                                 <div className="d-inline-flex">
                                   <div className="input-group mb-3">
-                                    <Input type="text" className="form-control" placeholder="Enter Coupon code" />
+                                    <Input type="text" className="form-control" placeholder="Enter Coupon code" onChange={e => setCode(e.target.value)} />
 
-                                    <Button color="light" type="button">
+                                    <Button color="light" type="button" onClick={() => applyCoupon(product?.id)}>
                                       Check
                                     </Button>
                                   </div>
@@ -161,6 +183,7 @@ const ProductOrder = ({ modal_fullscreen, setmodal_fullscreen, tog_fullscreen, p
                 type="button"
                 onClick={() => {
                   tog_fullscreen()
+                  closeModal()
                 }}
                 className="btn btn-secondary waves-effect"
                 data-dismiss="modal"
