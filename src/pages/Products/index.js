@@ -4,6 +4,8 @@ import { Button, Card, CardBody, Col, Form, FormFeedback, Input, Label, Modal, M
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 
+import { handleError, handleSuccess } from "../../helpers/Notifcation/SweetAlert"
+
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 import * as Yup from "yup"
 import { useFormik } from "formik"
@@ -48,7 +50,7 @@ const ShopProducts = () => {
           setLoaded(false)
         }
       } catch (error) {
-        showToast(error.message || "error fetching products", "danger", 6000)
+        handleError(error.message || "error fetching products")
         setLoaded(false)
       }
     },
@@ -67,12 +69,12 @@ const ShopProducts = () => {
       const rs = await fetchRequest(url, "DELETE", true)
 
       if (rs.success) {
-        showToast("Product Deleted successfully ", "success")
         setDeleteModal(false)
         fetchProducts()
+        return handleSuccess("Product Deleted successfully ")
       }
     } catch (error) {
-      showToast(error.message || "error deleting products", "danger", 6000)
+      handleError(error.message || "error deleting products")
       setDeleteModal(false)
     }
   }
@@ -102,7 +104,8 @@ const ShopProducts = () => {
 
         const rs = await fetchRequest(url, "POST", true, newProduct)
         if (rs.success) {
-          showToast("Product created successfully", "success")
+          // showToast("Product created successfully", "success")
+          handleSuccess("Product created successfully")
           setSubmitting(false)
           fetchProducts()
         }

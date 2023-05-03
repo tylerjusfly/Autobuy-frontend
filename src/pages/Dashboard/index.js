@@ -4,6 +4,7 @@ import { Container, Table, UncontrolledTooltip } from "reactstrap"
 import { fetchRequest } from "../../helpers/api_helper"
 import { useToast } from "../../helpers/Notifcation/useToast"
 import { setSelectedShop } from "../../store/e-commerce/actions"
+import { handleError, handleSuccess } from "../../helpers/Notifcation/SweetAlert"
 
 const Dashboard = () => {
   const dispatch = useDispatch()
@@ -31,9 +32,9 @@ const Dashboard = () => {
       setShopCount(count)
       setLoading(false)
     } catch (error) {
-      showToast(error.message || "an error occurred while fetching shops", "danger", 6000)
+      handleError(error.message || "an error occurred while fetching shops")
     }
-  }, [shopUser.user.username, showToast])
+  }, [shopUser?.user?.username, showToast])
 
   const onSubmit = async e => {
     e.preventDefault()
@@ -44,16 +45,16 @@ const Dashboard = () => {
       const rs = await fetchRequest(registerUrl, "POST", true, values)
       console.log(rs)
       if (rs.success) {
-        showToast("shop created successfully", "success")
+        handleSuccess("shop created successfully")
         setShopname("")
         setDescription("")
         fetchShops()
       } else {
-        showToast(rs.message, "danger", 6000)
+        handleError(rs.message)
       }
     } catch (error) {
       setLoading(false)
-      showToast(error.message || "an error occurred while creating shop", "danger", 6000)
+      return handleError(error.message || "an error occurred while creating shop")
     }
   }
 
@@ -67,11 +68,11 @@ const Dashboard = () => {
       const rs = await fetchRequest(url, "PATCH", true)
       console.log("shop deleted successfully", rs)
       if (rs.success) {
-        showToast("shop disabled successfully", "success")
+        handleSuccess("shop disabled successfully")
         fetchShops()
       }
     } catch (error) {
-      showToast(error.message || "unable to delete shop", "danger", 6000)
+      handleError(error.message || "unable to delete shop")
     }
   }
 

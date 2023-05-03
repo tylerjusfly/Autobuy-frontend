@@ -14,6 +14,7 @@ import { discardSelectedShop } from "../../../store/actions"
 
 const ProfileMenu = props => {
   const dispatch = useDispatch()
+  // const history = useHistory()
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false)
 
@@ -23,8 +24,11 @@ const ProfileMenu = props => {
     if (localStorage.getItem("authUser")) {
       const obj = JSON.parse(localStorage.getItem("authUser"))
 
-      if (obj.user.username) {
+      if (obj?.user.username) {
         setusername(obj.user.username)
+      } else {
+        localStorage.removeItem("authUser")
+        // history.push("/login")
       }
     }
   }, [props.success])
